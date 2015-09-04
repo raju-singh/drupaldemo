@@ -1,0 +1,74 @@
+<?php
+function custom_menu() {
+  $items['admin/main'] = array(
+    'title' => 'Main',
+    'description' => 'Main menu item which should appear on the toolbar',
+    'position' => 'left',
+    'weight' => -100, // Less weight so that it will appear to the extreme left, before dashboard.
+    //'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+
+  $items['admin/main/menu-1'] = array(
+    'title' => 'Menu 1',
+    'description' => 'Child of the menu appearing in toolbar.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('custom_form'),
+    'access arguments' => array('custom permission'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/main/extra'] = array(
+    'title' => 'Extra',
+    'description' => 'Child of the menu appearing in toolbar.',
+    'page callback' => 'custom_page_callback',
+    'access arguments' => array('custom permission'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+function custom_form($node, &$form_state) {
+  $type = node_type_get_type($node);
+
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Title',
+    '#default_value' => !empty($node->title) ? $node->title : '',
+    '#required' => TRUE,
+    '#weight' => -5,
+  );
+
+  $form['field1'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Custom field'),
+    '#default_value' => $node->field1,
+    '#maxlength' => 127,
+  );
+  $form['selectbox'] = array(
+    '#type' => 'select',
+    '#title' => t('Select box'),
+    '#default_value' => $node->selectbox,
+    '#options' => array(
+      1 => 'Option A',
+      2 => 'Option B',
+      3 => 'Option C',
+    ),
+    '#description' => t('Choose an option.'),
+  );
+  $form['save_button'] =array(
+	'#type'=> 'save',
+	'#title' => 'Save',);
+
+  return $form;
+}
+
+function custom_permission(){
+	return array(
+		'custom administer' => array(
+		'title'=> t('Custom mdule administer.'),
+		'description'=>t('admin sets the required permission.'),
+	),);
+}

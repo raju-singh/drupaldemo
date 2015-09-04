@@ -1,0 +1,6 @@
+;Id
+name = Custom Node
+description = A custom module on flag.
+core = 7.x
+php = 5.2
+package = Drupal
